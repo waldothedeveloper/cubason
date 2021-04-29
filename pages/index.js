@@ -1,16 +1,16 @@
 import Head from "next/head";
-import Link from "next/link";
+import Hero2 from "./hero2";
 
 export default function Home() {
   return (
     <div className="">
       <Head>
-        {/* <title>Create Next App</title> */}
+        <title>Cubason</title>
         {/* <link rel="icon" href="/favicon.ico" /> */}
       </Head>
 
       <main>
-        <p>TEST</p>
+        <Hero2 />
       </main>
 
       <footer className=""></footer>
