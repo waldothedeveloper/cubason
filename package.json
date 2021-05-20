@@ -5,18 +5,30 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "node server.js"
   },
   "dependencies": {
+    "@headlessui/react": "^1.0.0",
+    "@heroicons/react": "^1.0.1",
+    "@tailwindcss/forms": "^0.3.2",
     "@tailwindcss/typography": "^0.4.0",
+    "algoliasearch": "^4.8.6",
     "autoprefixer": "^10.2.5",
     "firebase": "^8.2.9",
-    "firebase-admin": "^9.5.0",
-    "next": "10.0.7",
+    "firebase-admin": "^9.6.0",
+    "next": "10.2.0",
     "next-images": "^1.7.0",
+    "nookies": "^2.5.2",
     "postcss": "^8.2.7",
-    "react": "17.0.1",
-    "react-dom": "17.0.1",
+    "prop-types": "^15.7.2",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-instantsearch-dom": "^6.10.3",
+    "smartystreets-javascript-sdk": "^1.8.1",
+    "swr": "^0.5.5",
     "tailwindcss": "^2.0.3"
+  },
+  "devDependencies": {
+    "eslint-plugin-react": "^7.23.2"
   }
 }

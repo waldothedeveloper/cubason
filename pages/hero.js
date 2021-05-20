@@ -1,10 +1,9 @@
 import React from "react";
-import cuba_flag from "../public/cuba2.svg";
 import Image from "next/image";
 
 const Hero = () => {
   return (
-    <div className="relative bg-gray-50">
+    <div className="relative">
       <main className="lg:relative">
         <div className="mx-auto max-w-7xl w-full pt-16 pb-20 text-center lg:py-48 lg:text-left">
           <div className="px-4 lg:w-1/2 sm:px-8 xl:pr-16">
@@ -47,7 +46,7 @@ const Hero = () => {
 
                     <Image
                       className="py-0 pl-3 pr-7"
-                      src={cuba_flag}
+                      src="/cuba2.svg"
                       width={32}
                       height={32}
                       alt="bandera cubana icon"
