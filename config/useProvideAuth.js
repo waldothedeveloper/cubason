@@ -6,7 +6,7 @@ import { useFindOrCreateFireStoreUserAccount } from "./useFindOrCreateFireStoreU
 
 export const useProvideAuth = (redirectUrl = "/auth/login") => {
   const [user, setUser] = useState(null);
-  console.log("user: ", user);
+  // console.log("user: ", user);
   const { dbUser } = useFindOrCreateFireStoreUserAccount(user);
   const router = useRouter();
 

@@ -16,7 +16,7 @@ export const useBgPicture = () => {
   const fetcher = (url) => fetch(url, requestOptions).then((r) => r.json());
 
   const { data, error } = useSWR(
-    `https://api.unsplash.com/search/photos?page=1&query=cuba`,
+    `https://api.unsplash.com/search/photos?page=1&query=aerial`,
     fetcher
   );
 

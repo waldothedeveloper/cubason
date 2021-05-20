@@ -1,11 +1,11 @@
-import algoliasearch from "algoliasearch/lite";
-// import { findResultsState } from "react-instantsearch-dom/server";
+// import algoliasearch from "algoliasearch/lite";
+// // import { findResultsState } from "react-instantsearch-dom/server";
 
-const indexName = "cubason_dev";
+// const indexName = "cubason_dev";
 
-const searchClient = algoliasearch(
-  "213339JCYS",
-  process.env.NEXT_PUBLIC_ALGOLIA_CUBASON_DEV
-);
+// const searchClient = algoliasearch(
+//   "213339JCYS",
+//   process.env.NEXT_PUBLIC_ALGOLIA_CUBASON_DEV
+// );
 
-export { indexName, searchClient };
+// export { indexName, searchClient };

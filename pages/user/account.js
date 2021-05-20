@@ -1,15 +1,15 @@
-import { useState, Fragment } from "react";
+import { useState } from "react";
 import { useVerifyEmail } from "../../components/userHooks/useVerifyEmail";
 import { Transition } from "@headlessui/react";
 import VerifyEmailSent from "./verifyEmailSent";
 import Link from "next/link";
 import React from "react";
-import { usePicture } from "../../components/userHooks/usePicture";
 import Loader from "../helpers/loader";
 import { useAuth } from "../../context/useAuth";
 import nookies from "nookies";
+import UserProfilePicture from "./userProfilePicture";
 import { admin } from "../../config/firebaseAdmin";
-import { useRouter } from "next/router";
+import UploadNotification from "../helpers/uploadNotification";
 
 export async function getServerSideProps(ctx) {
   const cookies = nookies.get(ctx);
@@ -18,7 +18,8 @@ export async function getServerSideProps(ctx) {
     const uid = await admin
       .auth()
       .verifyIdToken(cookies.token)
-      .then((decodedToken) => decodedToken.uid);
+      .then((decodedToken) => decodedToken.uid)
+      .catch((err) => console.log("Error decoding token", err));
 
     if (!uid) {
       return {
@@ -30,18 +31,6 @@ export async function getServerSideProps(ctx) {
     }
 
     return { props: {} };
-    // const userRecord = await admin
-    //   .auth()
-    //   .getUser(uid)
-    //   .then((userRecord) => JSON.parse(JSON.stringify(userRecord)))
-    //   .catch((err) => console.log(err));
-
-    // //
-    // return {
-    //   props: {
-    //     userRecord,
-    //   },
-    // };
   } catch (error) {
     return {
       redirect: {
@@ -53,11 +42,8 @@ export async function getServerSideProps(ctx) {
 }
 
 const Account = () => {
-  const router = useRouter();
   const [sideBarMenu, setSideBarMenu] = useState(false);
   const [openProfileMenu, setOpenProfileMenu] = useState(false);
-  const uploadFileRef = React.createRef();
-  const { handleFiles, picErrors, setPicErrors } = usePicture();
   const { user, dbUser, logOut } = useAuth();
 
   //
@@ -80,6 +66,7 @@ const Account = () => {
     <>
       <div className="h-screen flex overflow-hidden bg-gray-100">
         {/* Off-canvas menu for mobile, show/hide based on off-canvas menu state. */}
+        <UploadNotification />
 
         <Transition
           show={sideBarMenu}
@@ -151,7 +138,7 @@ const Account = () => {
             </Transition.Child>
             <div className="flex-shrink-0 flex items-center px-4">
               <img
-                className="h-8 w-auto"
+                className="h-8 w-auto object-cover"
                 src="https://tailwindui.com/img/logos/easywire-logo-cyan-300-mark-white-text.svg"
                 alt="Easywire logo"
               />
@@ -386,7 +373,7 @@ const Account = () => {
             <div className="flex flex-col flex-grow bg-cyan-700 pt-5 pb-4 overflow-y-auto">
               <div className="flex items-center flex-shrink-0 px-4">
                 <img
-                  className="h-8 w-auto"
+                  className="h-8 w-auto object-cover"
                   src="https://tailwindui.com/img/logos/easywire-logo-cyan-300-mark-white-text.svg"
                   alt="Easywire logo"
                 />
@@ -666,7 +653,7 @@ const Account = () => {
                       id="search_field"
                       name="search_field"
                       className="block w-full h-full pl-8 pr-3 py-2 border-transparent text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-transparent sm:text-sm"
-                      placeholder="Search transactions"
+                      placeholder="Buscar..."
                       type="search"
                     />
                   </div>
@@ -703,9 +690,9 @@ const Account = () => {
                       aria-expanded="false"
                       aria-haspopup="true"
                     >
-                      {dbUser.photoURL !== null ? (
+                      {dbUser.photoURL ? (
                         <img
-                          className="h-8 w-8 rounded-full"
+                          className="h-8 w-8 rounded-full object-cover"
                           src={dbUser.photoURL}
                           alt="user profile picture"
                         />
@@ -731,7 +718,7 @@ const Account = () => {
 
                       <span className="hidden ml-3 text-gray-700 text-sm font-medium lg:block">
                         <span className="sr-only">Abrir perfil para </span>
-                        Emilia Birch
+                        {dbUser.firstName}
                       </span>
                       {/* Heroicon name: solid/chevron-down */}
                       <svg
@@ -778,7 +765,7 @@ const Account = () => {
                           className="w-full block px-4 py-2 text-sm text-gray-700 hover:bg-green-500"
                           role="menuitem"
                         >
-                          Settings
+                          Configuracion
                         </a>
                       </Link>
 
@@ -787,7 +774,7 @@ const Account = () => {
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-green-500"
                         role="menuitem"
                       >
-                        Logout
+                        Salir
                       </button>
                     </div>
                   </Transition>
@@ -806,7 +793,7 @@ const Account = () => {
                       {/* picture profile for desktop etc */}
                       {dbUser !== null && (
                         <img
-                          className="hidden h-16 w-16 rounded-full sm:block"
+                          className="hidden h-16 w-16 rounded-full sm:block object-cover"
                           src={dbUser.photoURL}
                           alt="profile picture for desktop"
                         />
@@ -814,126 +801,23 @@ const Account = () => {
                       {/* Small screen section starts here */}
                       <div>
                         <div className="flex items-center">
-                          {dbUser.photoURL !== null ? (
-                            <>
-                              {/* this will show the real update profile picture */}
-                              <input
-                                onClick={(event) => (event.target.value = null)}
-                                onChange={handleFiles}
-                                id="fileInput"
-                                type="file"
-                                accept="image/*"
-                                hidden
-                                ref={uploadFileRef}
-                              />
-                              <button
-                                className="focus:outline-none"
-                                type="button"
-                                onClick={() =>
-                                  uploadFileRef.current &&
-                                  uploadFileRef.current.click()
-                                }
-                              >
-                                <div className="shadow-lg bg-gradient-to-tr from-blue-400 to-green-500 p-1 rounded-full sm:hidden">
-                                  <div className="bg-gray-50 p-0.5 rounded-full sm:hidden">
-                                    <div className="relative">
-                                      <img
-                                        className="h-16 w-16 rounded-full sm:hidden"
-                                        src={dbUser.photoURL}
-                                        alt="user profile picture"
-                                      />
-                                      <div className="absolute top-0 right-0 -mr-4">
-                                        <div className="shadow p-2 bg-gray-100 flex items-center justify-center rounded-full">
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-4 w-4"
-                                            viewBox="0 0 20 20"
-                                            fill="currentColor"
-                                          >
-                                            <path
-                                              fillRule="evenodd"
-                                              d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z"
-                                              clipRule="evenodd"
-                                            />
-                                          </svg>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </button>
-                            </>
-                          ) : (
-                            <>
-                              <input
-                                onClick={(event) => (event.target.value = null)}
-                                onChange={handleFiles}
-                                id="fileInput"
-                                type="file"
-                                accept="image/*"
-                                hidden
-                                ref={uploadFileRef}
-                              />
-                              <button
-                                className="focus:outline-none"
-                                type="button"
-                                onClick={() =>
-                                  uploadFileRef.current &&
-                                  uploadFileRef.current.click()
-                                }
-                              >
-                                <div className="shadow-lg sm:hidden bg-gradient-to-tr from-blue-400 to-green-500 p-1 rounded-full">
-                                  <div className="sm:hidden bg-gray-50 p-0.5 rounded-full">
-                                    <div className="relative h-16 w-16 bg-gray-200 rounded-full sm:hidden flex items-center justify-center">
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        className="h-8 w-8 text-gray-400"
-                                        viewBox="0 0 20 20"
-                                        fill="currentColor"
-                                      >
-                                        <path
-                                          fillRule="evenodd"
-                                          d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                                          clipRule="evenodd"
-                                        />
-                                      </svg>
-                                      <div className="absolute top-0 right-0 -mr-4">
-                                        <div className="shadow p-2 bg-gray-300 flex items-center justify-center rounded-full">
-                                          <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-4 w-4"
-                                            viewBox="0 0 20 20"
-                                            fill="currentColor"
-                                          >
-                                            <path
-                                              fillRule="evenodd"
-                                              d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z"
-                                              clipRule="evenodd"
-                                            />
-                                          </svg>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </button>
-                            </>
-                          )}
+                          <UserProfilePicture
+                            imgClass="h-16 w-16 rounded-full sm:hidden object-cover"
+                            photo={dbUser.photoURL}
+                          />
 
-                          {dbUser.firstName !== null && (
+                          {dbUser.firstName && (
                             <h1 className="text-gray-700 ml-6 text-2xl font-bold leading-7 sm:leading-9 sm:truncate">
                               Que tal, {dbUser.firstName}
                             </h1>
                           )}
                         </div>
-                        {dbUser.email === null ? (
-                          <button
-                            onClick={() => router.push("/user/onboarding")}
-                            type="button"
-                            className="mt-6 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-gradient-to-tr from-blue-400 to-green-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                          >
-                            Completa tu perfil
-                          </button>
+                        {!dbUser.email ? (
+                          <Link href="/user/onboarding">
+                            <a className="mt-6 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-gradient-to-tr from-blue-400 to-green-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                              Completa tu perfil
+                            </a>
+                          </Link>
                         ) : (
                           <dl className="mt-6 flex flex-col sm:ml-3 sm:mt-1 sm:flex-row sm:flex-wrap">
                             <dt className="sr-only">email</dt>
@@ -971,9 +855,9 @@ const Account = () => {
                                       clipRule="evenodd"
                                     />
                                   </svg>
-                                  <span> Cuenta verificada</span>
+                                  <span>Cuenta verificada</span>
                                 </>
-                              ) : (
+                              ) : dbUser.email && !dbUser.emailVerified ? (
                                 <div className="flex">
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
@@ -994,7 +878,7 @@ const Account = () => {
                                     Verifica tu correo electronico
                                   </button>
                                 </div>
-                              )}
+                              ) : null}
                             </dd>
                             <dd className="mt-3 flex items-center text-sm text-gray-400 font-medium sm:mr-6 sm:mt-0 capitalize">
                               <svg

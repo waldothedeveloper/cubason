@@ -15,11 +15,10 @@ const HitResults = ({ hits, setPhonePrefix, setIsOpen, setValues }) => {
       id="listbox-option-0"
       role="option"
     >
-      {/* <!-- Selected: "font-semibold", Not Selected: "font-normal" --> */}
       <span className="font-normal whitespace-nowrap group-hover:text-blue-50 transition-colors duration-300 ease-in-out">
         {hit.country_name}
       </span>
-      {/* <!-- Highlighted: "text-indigo-200", Not Highlighted: "text-gray-500" --> */}
+
       <span className="text-gray-500 ml-5 group-hover:text-blue-100 transition-colors duration-300 ease-in-out">
         +{hit.phone_code}
       </span>

@@ -1,18 +1,19 @@
-import { useRouter } from "next/router";
 import { useState } from "react";
 import firebase from "../../config/firebaseClient";
+import { readableFileSize } from "../utils/readableFileSize";
 
 export const usePicture = () => {
+  const [show, setShow] = useState(false);
+  const [fileInfo, setFileInfo] = useState({});
   const [progress, setProgress] = useState(0);
   const [picErrors, setPicErrors] = useState({});
   const storage = firebase.storage();
   const storageRef = storage.ref();
   const currUser = firebase.auth().currentUser;
-  const router = useRouter();
 
   const handleFiles = (event) => {
     const fileList = event.target.files[0];
-    console.log("fileList: ", fileList);
+    // console.log("fileList: ", fileList);
     const metadata = {
       contentType: fileList.type,
     };
@@ -26,6 +27,9 @@ export const usePicture = () => {
           "Este archivo no esta permitido. Escoje una foto con formato .jpg, .jpeg, .png, .gif",
       });
     } else {
+      const fileSize = readableFileSize(fileList.size);
+      setFileInfo({ size: fileSize, name: fileList.name });
+      setShow(true);
       setPicErrors({});
       // start the upload (should I use Cloudinary for asset optimization and better CDN serving?)
       const uploadTask = storageRef
@@ -38,7 +42,7 @@ export const usePicture = () => {
           const progress =
             (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
           setProgress(() => Number.parseInt(progress, 10));
-          console.log("Upload is " + progress + "% done");
+          // console.log("Upload is " + progress + "% done");
         },
         (error) => {
           // eslint-disable-next-line
@@ -60,38 +64,48 @@ export const usePicture = () => {
         () => {
           // Upload completed successfully, now we can get the download URL
           uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-            // setLongUrl(downloadURL);
-            firebase
-              .firestore()
-              .doc(`users/${currUser.uid}`)
-              .update({
-                photoURL: downloadURL,
-              })
-              .then(() => {
-                console.log("dbUser has been updated");
-                currUser
-                  .updateProfile({
-                    photoURL: downloadURL,
-                  })
-                  .then(() => {
-                    // probably just reload the page with router.reload()
-                    // router.reload();
-                  })
-                  .catch((e) =>
-                    console.log(
-                      "could not update the current user profile after usePicture hook",
-                      e
-                    )
-                  );
-              })
-              .catch((err) =>
-                console.log("Could not update the photoURL of dbUser", err)
-              );
+            if (currUser.uid) {
+              firebase
+                .firestore()
+                .doc(`users/${currUser.uid}`)
+                .update({
+                  photoURL: downloadURL,
+                })
+                .then(() => {
+                  console.log("dbUser picture has been updated");
+                  currUser
+                    .updateProfile({
+                      photoURL: downloadURL,
+                    })
+                    .then(() => {
+                      console.log("user picture also updated");
+                    })
+                    .catch((e) =>
+                      console.log(
+                        "could not update the current user photoURL",
+                        e
+                      )
+                    );
+                })
+                .catch((err) =>
+                  console.log("Could not update the photoURL of dbUser", err)
+                );
+            } else {
+              console.error("ERROR: check the currUser:", currUser);
+            }
           });
         }
       );
     }
   };
 
-  return { handleFiles, picErrors, setPicErrors };
+  return {
+    fileInfo,
+    handleFiles,
+    picErrors,
+    setPicErrors,
+    progress,
+    show,
+    setShow,
+  };
 };

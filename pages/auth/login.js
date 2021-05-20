@@ -24,9 +24,6 @@ const Login = () => {
 
   const { show, message } = useGlobalError();
 
-  // const show = true;
-  // const message = "TESTING";
-
   //
   return (
     <>

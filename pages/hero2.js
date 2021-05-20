@@ -1,5 +1,4 @@
-import liquid_flag from "../public/cuba_flag_liquid.jpeg";
-import cuba_flag from "../public/cuba2.svg";
+// import liquid_flag from "../public/cuba_flag_liquid.jpeg";
 import Image from "next/image";
 
 const Hero2 = () => {
@@ -47,7 +46,7 @@ const Hero2 = () => {
                   </label>
                   <span className="py-0 pl-3 pr-7">
                     <Image
-                      src={cuba_flag}
+                      src="/cuba2.svg"
                       width={32}
                       height={32}
                       alt="bandera cubana icon"
@@ -76,7 +75,7 @@ const Hero2 = () => {
         <div className="p-24">
           <img
             className="w-full h-full object-cover"
-            src={liquid_flag}
+            src="/cuba_flag_liquid.jpeg"
             alt=""
           />
         </div>

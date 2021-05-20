@@ -2,7 +2,7 @@
 import { Fragment } from "react";
 import { Transition } from "@headlessui/react";
 
-const GlobalErrorNotifications = ({ show, message }) => {
+const GlobalErrorNotifications = ({ show, message, setShow, setMessage }) => {
   return (
     <>
       {/* Global notification live region, render this permanently at the end of the document */}
@@ -42,13 +42,14 @@ const GlobalErrorNotifications = ({ show, message }) => {
                     </svg>
                   </div>
                   <div className="ml-3 w-0 flex-1 pt-0.5">
-                    <p className="text-sm font-medium text-red-500">Error!</p>
-                    <p className="mt-1 text-sm text-gray-500">{message}</p>
+                    <p className="text-sm font-medium text-red-500">Oh snap!</p>
+                    <p className="mt-1 text-base text-red-500">{message}</p>
                   </div>
                   <div className="ml-4 flex-shrink-0 flex">
                     <button
-                      className="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                      className="bg-white rounded-md inline-flex text-red-400 hover:text-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                       onClick={() => {
+                        setMessage("");
                         setShow(false);
                       }}
                     >

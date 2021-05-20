@@ -3,7 +3,7 @@ import firebase from "../config/firebaseClient";
 
 export const useFindOrCreateFireStoreUserAccount = (user) => {
   const [dbUser, setDbUser] = useState(null);
-  console.log("dbUser: ", dbUser);
+  // console.log("dbUser: ", dbUser);
   const [uid, setUid] = useState(null);
 
   const createNewDbUser = (userDoc) => {
@@ -12,6 +12,14 @@ export const useFindOrCreateFireStoreUserAccount = (user) => {
         firstName: null,
         lastName: null,
         email: null,
+        birthDate: "",
+        address: {
+          street: "",
+          city: "",
+          state: "",
+          zip: "",
+          country: "",
+        },
         emailVerified: false,
         phoneNumber: user.phoneNumber,
         photoURL: null,

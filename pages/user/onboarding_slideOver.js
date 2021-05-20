@@ -1,6 +1,6 @@
 import { Transition } from "@headlessui/react";
 import React from "react";
-import { usePicture } from "../../components/userHooks/usePicture";
+import { useUploadPicture } from "../../context/useProvidePicture";
 
 //
 const SlideOverOnboarding = ({
@@ -15,7 +15,7 @@ const SlideOverOnboarding = ({
   // ! Handle File Upload
   const uploadFileRef = React.createRef();
 
-  const { handleFiles, picErrors, setPicErrors } = usePicture();
+  const { handleFiles, picErrors, setPicErrors } = useUploadPicture();
 
   //
   return userInfoSteps.step1.completed ? (

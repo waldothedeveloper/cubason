@@ -1,7 +1,5 @@
 import React, { Fragment } from "react";
 import { Transition } from "@headlessui/react";
-import { InstantSearch } from "react-instantsearch-dom";
-import { indexName, searchClient } from "./instantsearch";
 import CustomSearchBox from "./customSearchBox";
 import { CustomHits } from "./hitResults";
 
@@ -29,18 +27,15 @@ const CountriesPhoneCodes = ({
         aria-orientation="vertical"
         aria-labelledby="options-menu"
       >
-        <InstantSearch indexName={indexName} searchClient={searchClient}>
-          <CustomSearchBox defaultRefinement="" />
-          {/* HITS */}
-          <div className="max-h-36 overflow-y-scroll overflow-x-hidden">
-            {/* <SearchBox defaultRefinement="" /> */}
-            <CustomHits
-              setPhonePrefix={setPhonePrefix}
-              setIsOpen={setIsOpen}
-              setValues={setValues}
-            />
-          </div>
-        </InstantSearch>
+        <CustomSearchBox defaultRefinement="" />
+        {/* HITS */}
+        <div className="max-h-36 overflow-y-scroll overflow-x-hidden">
+          <CustomHits
+            setPhonePrefix={setPhonePrefix}
+            setIsOpen={setIsOpen}
+            setValues={setValues}
+          />
+        </div>
       </div>
     </Transition>
   );

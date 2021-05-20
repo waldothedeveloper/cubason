@@ -5,7 +5,6 @@ import { useGlobalError } from "../../context/useGlobalErrorNotification";
 
 export const useOnboarding = (validate) => {
   const currUser = firebase.auth().currentUser;
-
   const router = useRouter();
   const [slideOver, setSlideOver] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
